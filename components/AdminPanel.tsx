@@ -40,7 +40,7 @@
 //         }
 
 //         ::-webkit-scrollbar-thumb {
-//           background: #2a2a38;
+//           background: #2A3C5F;
 //           border-radius: 10px;
 //         }
 
@@ -48,7 +48,7 @@
 //         .admin-layout {
 //           display: flex;
 //           height: 100vh;
-//           background: #0f0f13;
+//           background: #0C1626;
 //           font-family: 'DM Sans', sans-serif;
 //           overflow: hidden;
 //         }
@@ -69,8 +69,8 @@
 //           align-items: center;
 //           gap: 12px;
 //           padding: 16px 20px;
-//           background: #13131a;
-//           border-bottom: 1px solid #1e1e2e;
+//           background: #152341;
+//           border-bottom: 1px solid #2A3C5F;
 //           z-index: 40;
 //         }
 
@@ -81,9 +81,9 @@
 //           justify-content: center;
 //           width: 40px;
 //           height: 40px;
-//           border: 1px solid #1e1e2e;
+//           border: 1px solid #2A3C5F;
 //           background: transparent;
-//           color: #e8e8f0;
+//           color: #E8EFF8;
 //           cursor: pointer;
 //           border-radius: 8px;
 //           transition: all 0.2s ease;
@@ -92,7 +92,7 @@
 //         }
 
 //         .hamburger-btn:active {
-//           background: #1a1a26;
+//           background: #18294A;
 //         }
 
 //         .hamburger-btn svg {
@@ -106,7 +106,7 @@
 //           font-family: 'Syne', sans-serif;
 //           font-size: 16px;
 //           font-weight: 700;
-//           color: #e8e8f0;
+//           color: #E8EFF8;
 //         }
 
 //         /* Main content scrollable area */
@@ -114,8 +114,8 @@
 //           flex: 1;
 //           overflow-y: auto;
 //           padding: 36px 40px;
-//           background: #0f0f13;
-//           color: #e8e8f0;
+//           background: #0C1626;
+//           color: #E8EFF8;
 //           min-width: 0;
 //         }
 

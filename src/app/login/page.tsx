@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  if (checking) return <div style={{ background: "#0f0f13", height: "100vh" }} />;
+  if (checking) return <div style={{ background: "#0C1626", height: "100vh" }} />;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,18 +63,21 @@ export default function LoginPage() {
       alignItems: "center",
       justifyContent: "center",
       height: "100vh",
-      background: "#0f0f13",
+      background: "#0C1626",
       fontFamily: "'DM Sans', sans-serif"
     }}>
       <div style={{
-        background: "#13131a",
+        background: "#152341",
         padding: "40px",
         borderRadius: "12px",
-        border: "1px solid #1e1e2e",
+        border: "1px solid #2A3C5F",
         width: "100%",
         maxWidth: "400px"
       }}>
-        <h1 style={{ color: "#fff", marginBottom: "24px", fontFamily: "'Syne', sans-serif", fontSize: "24px", textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
+          <Image src="/images/livo-logo.png" alt="Livolife" width={560} height={258} style={{ width: "150px", height: "auto" }} priority />
+        </div>
+        <h1 style={{ color: "#E8EFF8", marginBottom: "24px", fontFamily: "'Syne', sans-serif", fontSize: "18px", letterSpacing: "0.18em", textTransform: "uppercase", textAlign: "center", opacity: 0.7 }}>
           Admin Login
         </h1>
 
@@ -85,7 +89,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={{ display: "block", color: "#555570", fontSize: "12px", marginBottom: "6px" }}>Email</label>
+            <label style={{ display: "block", color: "#7E93B4", fontSize: "12px", marginBottom: "6px" }}>Email</label>
             <input
               type="email"
               value={email}
@@ -94,10 +98,10 @@ export default function LoginPage() {
               style={{
                 width: "100%",
                 padding: "12px",
-                background: "#0f0f13",
-                border: "1px solid #1e1e2e",
+                background: "#0C1626",
+                border: "1px solid #2A3C5F",
                 borderRadius: "8px",
-                color: "#e8e8f0",
+                color: "#E8EFF8",
                 fontSize: "14px",
                 outline: "none"
               }}
@@ -105,7 +109,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label style={{ display: "block", color: "#555570", fontSize: "12px", marginBottom: "6px" }}>Password</label>
+            <label style={{ display: "block", color: "#7E93B4", fontSize: "12px", marginBottom: "6px" }}>Password</label>
             <input
               type="password"
               value={password}
@@ -114,10 +118,10 @@ export default function LoginPage() {
               style={{
                 width: "100%",
                 padding: "12px",
-                background: "#0f0f13",
-                border: "1px solid #1e1e2e",
+                background: "#0C1626",
+                border: "1px solid #2A3C5F",
                 borderRadius: "8px",
-                color: "#e8e8f0",
+                color: "#E8EFF8",
                 fontSize: "14px",
                 outline: "none"
               }}
@@ -129,8 +133,8 @@ export default function LoginPage() {
             disabled={loading}
             style={{
               padding: "14px",
-              background: "#D4AF37",
-              color: "#070707",
+              background: "#E8EFF8",
+              color: "#0C1626",
               border: "none",
               borderRadius: "8px",
               fontSize: "14px",

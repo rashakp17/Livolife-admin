@@ -1,5 +1,6 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -84,8 +85,8 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
           top: 0;
           width: 240px;
           height: 100vh;
-          background: #13131a;
-          border-right: 1px solid #1e1e2e;
+          background: #152341;
+          border-right: 1px solid #2A3C5F;
           display: flex;
           flex-direction: column;
           padding: 28px 0;
@@ -111,7 +112,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
             height: 100%;
             transform: translateX(0);
             z-index: auto;
-            border-right: 1px solid #1e1e2e;
+            border-right: 1px solid #2A3C5F;
             box-shadow: none;
             flex-shrink: 0;
           }
@@ -128,25 +129,18 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
         /* Sidebar header/logo */
         .sidebar-header {
           padding: 0 24px 32px;
-          border-bottom: 1px solid #1e1e2e;
+          border-bottom: 1px solid #2A3C5F;
         }
 
-        .sidebar-logo {
-          font-family: 'Syne', sans-serif;
-          font-size: 20px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          color: #e8e8f0;
-          margin: 0;
-        }
-
-        .sidebar-logo-accent {
-          color: #D4AF37;
+        .sidebar-logo-img {
+          display: block;
+          width: 132px;
+          height: auto;
         }
 
         .sidebar-subtext {
           font-size: 11px;
-          color: #44445a;
+          color: #5C7095;
           margin-top: 2px;
           font-weight: 500;
           letter-spacing: 0.06em;
@@ -163,7 +157,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
           font-size: 10px;
           font-weight: 700;
           letter-spacing: 0.12em;
-          color: #33334a;
+          color: #44587D;
           padding: 0 24px 10px;
           text-transform: uppercase;
         }
@@ -178,7 +172,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
           font-family: 'DM Sans', sans-serif;
           font-size: 14px;
           font-weight: 500;
-          color: #666680;
+          color: #7E93B4;
           border-left: 3px solid transparent;
           transition: all 0.18s ease;
           user-select: none;
@@ -188,20 +182,20 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
         }
 
         .nav-item:hover {
-          color: #c4c4e0;
-          background: #1a1a26;
-          border-left-color: #D4AF37;
+          color: #D3DEEC;
+          background: #18294A;
+          border-left-color: #E8EFF8;
         }
 
         .nav-item.active {
-          color: #D4AF37;
-          background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
-          border-left-color: #D4AF37;
+          color: #E8EFF8;
+          background: linear-gradient(90deg, rgba(232, 239, 248, 0.14) 0%, transparent 100%);
+          border-left-color: #E8EFF8;
           font-weight: 600;
         }
 
         .nav-item.active svg {
-          color: #D4AF37;
+          color: #E8EFF8;
         }
 
         .nav-item svg {
@@ -213,7 +207,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
         /* Sidebar footer */
         .sidebar-footer {
           padding: 20px 24px;
-          border-top: 1px solid #1e1e2e;
+          border-top: 1px solid #2A3C5F;
           margin-top: auto;
         }
 
@@ -228,13 +222,13 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #b8932c, #D4AF37);
+          background: linear-gradient(135deg, #C9D9EE, #E8EFF8);
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 13px;
           font-weight: 700;
-          color: #fff;
+          color: #152341;
           flex-shrink: 0;
         }
 
@@ -246,7 +240,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
         .user-name {
           font-size: 13px;
           font-weight: 600;
-          color: #c4c4e0;
+          color: #D3DEEC;
           margin: 0;
           white-space: nowrap;
           overflow: hidden;
@@ -255,7 +249,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
 
         .user-email {
           font-size: 11px;
-          color: #44445a;
+          color: #5C7095;
           margin: 0;
           white-space: nowrap;
           overflow: hidden;
@@ -265,7 +259,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
         .logout-btn {
           padding: 12px 24px;
           cursor: pointer;
-          color: #666680;
+          color: #7E93B4;
           border: none;
           background: transparent;
           border-radius: 8px;
@@ -318,12 +312,12 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-          background: #2a2a38;
+          background: #2A3C5F;
           border-radius: 4px;
         }
 
         .sidebar::-webkit-scrollbar-thumb:hover {
-          background: #3a3a48;
+          background: #33486E;
         }
       `}</style>
 
@@ -338,9 +332,14 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProp
       <aside className={`sidebar${isSidebarOpen ? " open" : ""}`} role="navigation">
         {/* Logo Section */}
         <div className="sidebar-header">
-          <h1 className="sidebar-logo">
-            AD<span className="sidebar-logo-accent">MIN</span>
-          </h1>
+          <Image
+            src="/images/livo-logo.png"
+            alt="Livolife"
+            width={560}
+            height={258}
+            className="sidebar-logo-img"
+            priority
+          />
           <p className="sidebar-subtext">CONTROL PANEL</p>
         </div>
 
