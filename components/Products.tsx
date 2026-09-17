@@ -20,23 +20,12 @@ type Product = {
   name: string;
   description: string;
   category?: { _id: string; name: string } | null;
-  subCategory?: { _id: string; name: string } | null;
   taxRate?: number;
   variants: Variant[];
   isActive: boolean;
 };
 
 type Category = { _id: string; name: string };
-
-/** `category` arrives populated from /subcategory, but tolerate a bare id. */
-type SubCategory = {
-  _id: string;
-  name: string;
-  category?: { _id: string } | string | null;
-};
-
-const parentId = (cat: SubCategory["category"]): string =>
-  typeof cat === "string" ? cat : cat?._id ?? "";
 
 const BLANK_VARIANT = (): Variant => ({
   color: "", price: "", stock: "0", sizes: [], images: [], isDefault: false,
@@ -125,7 +114,6 @@ const getValidColor = (colorName: string): string => {
 export default function Products() {
   const [products, setProducts]     = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [search, setSearch]         = useState("");
   const [showModal, setShowModal]   = useState(false);
   const [editId, setEditId]         = useState<string | null>(null);
@@ -136,7 +124,6 @@ export default function Products() {
   const [name, setName]             = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [subCategoryId, setSubCategoryId] = useState("");
   const [taxRate, setTaxRate] = useState("0");
   const [variants, setVariants]     = useState<Variant[]>([{ ...BLANK_VARIANT(), isDefault: true }]);
   const api = process.env.NEXT_PUBLIC_API_URL;
@@ -157,21 +144,7 @@ export default function Products() {
     } catch (e) { console.error(e); }
   }, [api]);
 
-  const fetchSubCategories = useCallback(async () => {
-    try {
-      const res = await fetch(`${api}/subcategory`);
-      const data = await res.json();
-      if (data.subCategories) setSubCategories(data.subCategories);
-    } catch (e) { console.error(e); }
-  }, [api]);
-
-  useEffect(() => { fetchProducts(); fetchCategories(); fetchSubCategories(); }, [fetchProducts, fetchCategories, fetchSubCategories]);
-
-  // Only the chosen category's children are offerable — the API rejects a
-  // subcategory from any other category, so never present one.
-  const availableSubCategories = subCategories.filter(
-    s => parentId(s.category) === categoryId
-  );
+  useEffect(() => { fetchProducts(); fetchCategories(); }, [fetchProducts, fetchCategories]);
 
   /* ── Variant helpers ── */
   const addVariant = () => setVariants(v => [...v, BLANK_VARIANT()]);
@@ -225,7 +198,7 @@ export default function Products() {
 
   /* ── Reset ── */
   const resetForm = () => {
-    setName(""); setDescription(""); setCategoryId(""); setSubCategoryId(""); setTaxRate("0");
+    setName(""); setDescription(""); setCategoryId(""); setTaxRate("0");
     setVariants([{ ...BLANK_VARIANT(), isDefault: true }]);
     setEditId(null); setError("");
   };
@@ -254,9 +227,6 @@ export default function Products() {
     const payload = {
       name, description,
       category: categoryId || undefined,
-      // null rather than undefined, so clearing the dropdown on an edit actually
-      // untags the product instead of the API skipping the field.
-      subCategory: subCategoryId || null,
       taxRate: Number(taxRate) || 0,
       variants: variants.map(v => ({
         ...v,
@@ -300,7 +270,6 @@ export default function Products() {
     setName(p.name);
     setDescription(p.description);
     setCategoryId(p.category?._id || "");
-    setSubCategoryId(p.subCategory?._id || "");
     setTaxRate(String(p.taxRate ?? 0));
     setVariants(p.variants.map(v => ({ ...v, price: String(v.price), stock: String(v.stock) })));
     setError("");
@@ -406,11 +375,6 @@ export default function Products() {
                   </td>
                   <td style={{ color: "#E8EFF8", fontSize: 12 }}>
                     {p.category?.name || "—"}
-                    {p.subCategory?.name && (
-                      <div style={{ color: "#7E93B4", fontSize: 11, marginTop: 2 }}>
-                        ↳ {p.subCategory.name}
-                      </div>
-                    )}
                     {!!p.taxRate && (
                       <div style={{ color: "#5C7095", fontSize: 11, marginTop: 2 }}>
                         GST {p.taxRate}%
@@ -474,34 +438,10 @@ export default function Products() {
                 <select
                   className="input"
                   value={categoryId}
-                  onChange={e => {
-                    setCategoryId(e.target.value);
-                    // The old subcategory belongs to the old category; keeping it
-                    // would submit a pairing the API rejects.
-                    setSubCategoryId("");
-                  }}
+                  onChange={e => setCategoryId(e.target.value)}
                 >
                   <option value="">— Select category —</option>
                   {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
-                </select>
-              </Field>
-              <Field label="Subcategory (optional)">
-                <select
-                  className="input"
-                  value={subCategoryId}
-                  onChange={e => setSubCategoryId(e.target.value)}
-                  disabled={!categoryId || availableSubCategories.length === 0}
-                >
-                  <option value="">
-                    {!categoryId
-                      ? "— Pick a category first —"
-                      : availableSubCategories.length === 0
-                        ? "— No subcategories in this category —"
-                        : "— None —"}
-                  </option>
-                  {availableSubCategories.map(s => (
-                    <option key={s._id} value={s._id}>{s.name}</option>
-                  ))}
                 </select>
               </Field>
               <Field label="GST %">
