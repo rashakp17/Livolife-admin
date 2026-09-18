@@ -8,7 +8,8 @@ type SizeEntry = { size: string; stock: string };
 type Variant = {
   _id?: string;
   color: string;
-  price: string;
+  price: string;          // actual price
+  offerPrice: string;     // optional; "" = no offer
   stock: string;
   sizes: SizeEntry[];
   images: string[];       // base64 previews / stored URLs
@@ -28,7 +29,7 @@ type Product = {
 type Category = { _id: string; name: string };
 
 const BLANK_VARIANT = (): Variant => ({
-  color: "", price: "", stock: "0", sizes: [], images: [], isDefault: false,
+  color: "", price: "", offerPrice: "", stock: "0", sizes: [], images: [], isDefault: false,
 });
 
 /* ─── Helpers ────────────────────────────────────────── */
@@ -41,6 +42,10 @@ const toBase64 = (file: File): Promise<string> =>
   });
 
 const token = () => localStorage.getItem("token") || "";
+
+/** Whole-number % the offer takes off the actual price; 0 when there's no valid offer. */
+const offerPercent = (price: number, offerPrice: number): number =>
+  offerPrice > 0 && offerPrice < price ? Math.round(((price - offerPrice) / price) * 100) : 0;
 
 const colorMap: Record<string, string> = {
   "sage green": "#8a9a86",
@@ -214,6 +219,7 @@ export default function Products() {
     if (new Set(colors).size !== colors.length) return "Each variant color must be unique.";
     for (const v of variants) {
       if (!v.price || Number(v.price) <= 0) return "Every variant price must be > 0.";
+      if (v.offerPrice && Number(v.offerPrice) >= Number(v.price)) return "Offer price must be lower than the actual price.";
     }
     return null;
   };
@@ -231,6 +237,7 @@ export default function Products() {
       variants: variants.map(v => ({
         ...v,
         price: Number(v.price),
+        offerPrice: Number(v.offerPrice) || 0,
         stock: Number(v.stock),
       })),
     };
@@ -271,7 +278,12 @@ export default function Products() {
     setDescription(p.description);
     setCategoryId(p.category?._id || "");
     setTaxRate(String(p.taxRate ?? 0));
-    setVariants(p.variants.map(v => ({ ...v, price: String(v.price), stock: String(v.stock) })));
+    setVariants(p.variants.map(v => ({
+      ...v,
+      price: String(v.price),
+      offerPrice: Number(v.offerPrice) > 0 ? String(v.offerPrice) : "",
+      stock: String(v.stock),
+    })));
     setError("");
     setShowModal(true);
   };
@@ -369,7 +381,7 @@ export default function Products() {
                       }
                       <div>
                         <div style={{ fontWeight: 600 }}>{p.name}</div>
-                        {def && <div style={{ fontSize: 11, color: "#7E93B4" }}>${Number(def.price).toFixed(2)}</div>}
+                        {def && <PriceSummary price={Number(def.price)} offerPrice={Number(def.offerPrice) || 0} />}
                       </div>
                     </div>
                   </td>
@@ -397,7 +409,7 @@ export default function Products() {
                               {v.color}
                             </>
                           ) : (
-                            <>₹{v.price}</>
+                            <>₹{Number(v.offerPrice) > 0 ? v.offerPrice : v.price}</>
                           )}
                         </span>
                       ))}
@@ -511,6 +523,35 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+/* ─── Price displays ────────────────────────────────── */
+function PriceSummary({ price, offerPrice }: { price: number; offerPrice: number }) {
+  const pct = offerPercent(price, offerPrice);
+  if (!pct) return <div style={{ fontSize: 11, color: "#7E93B4" }}>₹{price}</div>;
+  return (
+    <div style={{ fontSize: 11, color: "#7E93B4", display: "flex", gap: 6, alignItems: "center" }}>
+      <span style={{ color: "#E8EFF8" }}>₹{offerPrice}</span>
+      <span style={{ textDecoration: "line-through" }}>₹{price}</span>
+      <span style={{ color: "#22c55e", fontWeight: 600 }}>{pct}% off</span>
+    </div>
+  );
+}
+
+/** Live feedback under the price inputs so the admin sees the % before saving. */
+function OfferHint({ price, offerPrice }: { price: number; offerPrice: number }) {
+  if (!offerPrice) {
+    return <div style={{ fontSize: 11, color: "#5C7095", marginBottom: 10 }}>Leave Offer Price empty to sell at the actual price.</div>;
+  }
+  const pct = offerPercent(price, offerPrice);
+  if (!pct) {
+    return <div style={{ fontSize: 11, color: "#ef4444", marginBottom: 10 }}>Offer price must be lower than the actual price.</div>;
+  }
+  return (
+    <div style={{ fontSize: 11, color: "#22c55e", marginBottom: 10 }}>
+      {pct}% off — customers save ₹{Math.round((price - offerPrice) * 100) / 100}
+    </div>
+  );
+}
+
 /* ─── VariantCard ────────────────────────────────────── */
 function VariantCard({
   variant, index, total, onUpdate, onRemove, onSetDefault, onAddImages, onRemoveImage,
@@ -537,14 +578,24 @@ function VariantCard({
         >×</button>
       )}
 
-      <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-        <Field label="Price ($)">
-          <input className="input" type="number" min="0" value={variant.price} onChange={e => onUpdate(index, "price", e.target.value)} placeholder="0.00" />
-        </Field>
-        <Field label="Stock">
-          <input className="input" type="number" min="0" value={variant.stock} onChange={e => onUpdate(index, "stock", e.target.value)} placeholder="0" />
-        </Field>
+      <div style={{ display: "flex", gap: 10, marginBottom: 6, flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 120px" }}>
+          <Field label="Actual Price (₹)">
+            <input className="input" type="number" min="0" value={variant.price} onChange={e => onUpdate(index, "price", e.target.value)} placeholder="0.00" />
+          </Field>
+        </div>
+        <div style={{ flex: "1 1 120px" }}>
+          <Field label="Offer Price (₹)">
+            <input className="input" type="number" min="0" value={variant.offerPrice} onChange={e => onUpdate(index, "offerPrice", e.target.value)} placeholder="Optional" />
+          </Field>
+        </div>
+        <div style={{ flex: "1 1 80px" }}>
+          <Field label="Stock">
+            <input className="input" type="number" min="0" value={variant.stock} onChange={e => onUpdate(index, "stock", e.target.value)} placeholder="0" />
+          </Field>
+        </div>
       </div>
+      <OfferHint price={Number(variant.price)} offerPrice={Number(variant.offerPrice)} />
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
         <label style={{ fontSize: 12, color: "#E8EFF8", display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
