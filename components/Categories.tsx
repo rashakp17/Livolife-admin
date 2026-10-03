@@ -189,7 +189,7 @@ export default function Categories() {
       })
       .catch(console.error);
   }, [api]);
-  
+
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
@@ -230,7 +230,7 @@ export default function Categories() {
         alert(`Error: ${text}`);
         return;
       }
-      
+
       const data = await res.json();
       if (data.success) {
         // Take the saved doc back from the API — its `image` is the Cloudinary
@@ -383,7 +383,7 @@ export default function Categories() {
                     style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, width: "100%", aspectRatio: "4 / 3", border: "1px dashed #2A3C5F", borderRadius: 10, background: "#0C1626", cursor: "pointer", color: "#7E93B4", fontSize: 12, textAlign: "center", padding: 12 }}
                   >
                     <span style={{ fontSize: 22, lineHeight: 1 }}>＋</span>
-                    <span>Choose an image</span>
+                    <span>Choose an image </span>
                     <span style={{ fontSize: 10, opacity: 0.7 }}>JPG or PNG, up to 5MB</span>
                     <input
                       type="file"
