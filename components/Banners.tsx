@@ -115,20 +115,19 @@ export default function Banners() {
         .banner-preview-image { background: #0C1626; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         
         /* Mobile - stack layout */
-        @media (max-width: 768px) {
-          .banner-card { flex-direction: column !important; gap: 12px !important; padding: 12px !important; }
-          .banner-preview-wrapper { flex-direction: column; gap: 12px; }
-          .banner-preview-item { width: 100%; }
-          .banner-preview-image { width: 100%; height: 150px !important; }
-          .banner-actions { flex-direction: column !important; gap: 12px; }
-          .btn-primary { width: 100%; }
-          .btn-ghost { width: 100%; }
-        }
-        
-        /* Extra small - further optimization */
-        @media (max-width: 640px) {
-          .overlay { padding: 12px; }
-          .banner-preview-image { height: 120px !important; }
+        /* Phones: desktop preview stretches, mobile preview stays narrow beside it,
+           Delete drops below as a full-width button */
+        @media (max-width: 767px) {
+          .banner-card { flex-direction: column !important; align-items: stretch !important; gap: 12px; padding: 12px !important; }
+          .banner-preview-wrapper { width: 100%; align-items: flex-end; }
+          .banner-preview-item.desktop { flex: 1; min-width: 0; }
+          .banner-preview-item.desktop .banner-preview-image { width: 100% !important; height: 110px !important; }
+          .banner-preview-item.mobile .banner-preview-image { width: 74px !important; height: 110px !important; }
+          .banner-actions { margin-left: 0 !important; }
+          .banner-actions .btn-ghost { width: 100%; padding: 10px 12px; }
+          .overlay { padding: 12px; align-items: flex-start; }
+          .modal-actions { flex-direction: column-reverse; }
+          .modal-actions button { width: 100%; padding: 12px; }
         }
       `}</style>
 
@@ -149,7 +148,7 @@ export default function Banners() {
             {/* Banner previews */}
             <div className="banner-preview-wrapper">
               {/* Desktop preview */}
-              <div className="banner-preview-item">
+              <div className="banner-preview-item desktop">
                 <span className="banner-preview-label">Desktop</span>
                 <div className="banner-preview-image" style={{ width: "240px", height: "120px" }}>
                   <Image src={banner.desktopImage} alt="desktop banner" width={240} height={120} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -157,7 +156,7 @@ export default function Banners() {
               </div>
 
               {/* Mobile preview */}
-              <div className="banner-preview-item">
+              <div className="banner-preview-item mobile">
                 <span className="banner-preview-label">Mobile</span>
                 <div className="banner-preview-image" style={{ width: "80px", height: "120px" }}>
                   <Image src={banner.mobileImage} alt="mobile banner" width={80} height={120} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -177,7 +176,7 @@ export default function Banners() {
       {/* Modal */}
       {showModal && (
         <div className="overlay" onClick={() => setShowModal(false)}>
-          <div className="card" style={{ width: "clamp(300px, 90vw, 500px)", padding: "clamp(16px, 5vw, 32px)", maxHeight: "90vh", overflowY: "auto" }} onClick={(e) => e.stopPropagation()}>
+          <div className="card" style={{ width: "100%", maxWidth: 500, padding: "clamp(16px, 5vw, 32px)", maxHeight: "90vh", overflowY: "auto", margin: "auto" }} onClick={(e) => e.stopPropagation()}>
             <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(16px, 4vw, 20px)", fontWeight: 700, color: "#E8EFF8", marginBottom: 20 }}>
               New Banner
             </div>
@@ -234,7 +233,7 @@ export default function Banners() {
               </Field>
             </div>
 
-            <div style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end", flexWrap: "wrap" }}>
+            <div className="modal-actions" style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end", flexWrap: "wrap" }}>
               <button className="btn-ghost" onClick={() => setShowModal(false)} style={{ flex: "1 1 auto", minWidth: "100px" }}>
                 Cancel
               </button>

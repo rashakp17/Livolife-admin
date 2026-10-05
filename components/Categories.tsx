@@ -312,7 +312,7 @@ export default function Categories() {
       <PageHeader title="Categories" sub={`${categories.length} total`} onAdd={() => setShowModal(true)} />
 
       {/* CATEGORY LIST */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(200px, 90vw, 280px), 1fr))", gap: "clamp(12px, 3vw, 16px)", marginTop: 24, width: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))", gap: "clamp(12px, 3vw, 16px)", marginTop: 24, width: "100%" }}>
         {categories.map((cat) => (
           <div key={cat._id!} className="card" style={{ padding: "clamp(12px, 3vw, 20px)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
@@ -343,7 +343,7 @@ export default function Categories() {
       {/* MODAL */}
       {showModal && (
         <div className="overlay" onClick={() => setShowModal(false)}>
-          <div className="card" style={{ width: "clamp(300px, 90vw, 400px)", padding: "clamp(16px, 4vw, 28px)" }} onClick={(e) => e.stopPropagation()}>
+          <div className="card" style={{ width: "100%", maxWidth: 400, maxHeight: "90vh", overflowY: "auto", padding: "clamp(16px, 4vw, 28px)" }} onClick={(e) => e.stopPropagation()}>
             <div style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(16px, 4vw, 18px)", fontWeight: 700, color: "#E8EFF8", marginBottom: 20 }}>
               {editId ? "Edit Category" : "New Category"}
             </div>

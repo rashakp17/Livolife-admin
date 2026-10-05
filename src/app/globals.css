@@ -69,18 +69,9 @@ body {
     font-size: 13px;
   }
   
-  /* Extra padding on small screens */
-  main {
-    padding: 12px !important;
-  }
-  
-  /* Small screens: remove horizontal scrolling */
-  * {
-    max-width: 100%;
-  }
-  
-  /* Better touch targets on mobile */
-  button, input, select, textarea {
+  /* Better touch targets on mobile. Buttons are left alone: forcing 44px
+     on them blows up the small × / chip buttons. */
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
     min-height: 44px;
     font-size: 16px; /* Prevents zoom on iOS */
   }
@@ -94,11 +85,6 @@ body {
 @media (max-width: 480px) {
   body {
     font-size: 12px;
-  }
-  
-  /* Tight padding on small phones */
-  main {
-    padding: 8px !important;
   }
 }
 
@@ -116,10 +102,6 @@ body {
 
 /* Landscape orientation on mobile */
 @media (max-height: 500px) and (orientation: landscape) {
-  main {
-    padding: 8px !important;
-  }
-  
   h1 {
     font-size: 18px !important;
   }

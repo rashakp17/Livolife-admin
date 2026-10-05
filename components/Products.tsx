@@ -329,17 +329,24 @@ export default function Products() {
           .btn-ghost { padding: 5px 10px; font-size: 11px; }
           .trow td { padding: 10px 12px; font-size: 12px; }
         }
-        @media (max-width: 768px) {
-          .trow { display: block; margin-bottom: 16px; border: 1px solid #2A3C5F; border-radius: 8px; padding: 12px; }
-          .trow td { display: block; padding: 8px 0; border: none; margin-bottom: 8px; }
-          .trow td:before { content: attr(data-label); font-weight: 600; color: #E8EFF8; display: block; margin-bottom: 4px; }
-          .overlay { padding: 16px; }
-          .modal-card { width: calc(100% - 32px) !important; max-height: 90vh !important; }
-        }
-        @media (max-width: 640px) {
-          .modal-card { width: calc(100% - 24px) !important; padding: 16px !important; }
-          .input { font-size: 14px; }
-          .btn-primary { padding: 8px 12px; font-size: 12px; width: 100%; }
+        /* Phones: drop the table grid and show each product as a stacked card */
+        @media (max-width: 767px) {
+          .ptable-wrap { background: transparent; border: none; overflow: visible !important; }
+          .ptable { min-width: 0 !important; }
+          .ptable thead { display: none; }
+          .ptable tbody { display: flex; flex-direction: column; gap: 12px; }
+          .trow { display: block; background: #152341; border: 1px solid #2A3C5F; border-radius: 12px; padding: 14px; }
+          .trow td { display: block; padding: 0; border: none; }
+          .trow td + td { margin-top: 10px; }
+          .trow td[data-label]:before { content: attr(data-label); display: block; margin-bottom: 4px; font-size: 10px; font-weight: 600; color: #7E93B4; text-transform: uppercase; letter-spacing: 0.05em; }
+          .trow .row-actions { padding-top: 10px; border-top: 1px solid #2A3C5F; }
+          .trow .row-actions .btn-ghost { flex: 1; padding: 8px 12px; font-size: 12px; }
+          .trow.empty td { text-align: center; padding: 12px 0; }
+          .overlay { padding: 12px; }
+          .modal-card { width: 100% !important; max-height: 92vh !important; padding: 16px !important; }
+          .input { font-size: 16px; }
+          .modal-actions { flex-direction: column-reverse; }
+          .modal-actions button { width: 100%; padding: 12px; }
         }
       `}</style>
 
@@ -356,8 +363,8 @@ export default function Products() {
       <input className="input" style={{ marginBottom: 20, width: "100%" }} placeholder="Search products…" value={search} onChange={e => setSearch(e.target.value)} />
 
       {/* Table */}
-      <div className="card" style={{ overflowX: "auto", overflowY: "hidden", width: "100%" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+      <div className="card ptable-wrap" style={{ overflowX: "auto", overflowY: "hidden", width: "100%" }}>
+        <table className="ptable" style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid #2A3C5F" }}>
               {["Product", "Category", "Variants", "Actions"].map(h => (
@@ -367,7 +374,7 @@ export default function Products() {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={4} style={{ padding: 24, textAlign: "center", color: "#5C7095", fontSize: 13 }}>No products yet</td></tr>
+              <tr className="trow empty"><td colSpan={4} style={{ padding: 24, textAlign: "center", color: "#5C7095", fontSize: 13 }}>No products yet</td></tr>
             )}
             {filtered.map(p => {
               const def = p.variants?.find(v => v.isDefault) || p.variants?.[0];
@@ -385,7 +392,7 @@ export default function Products() {
                       </div>
                     </div>
                   </td>
-                  <td style={{ color: "#E8EFF8", fontSize: 12 }}>
+                  <td data-label="Category" style={{ color: "#E8EFF8", fontSize: 12 }}>
                     {p.category?.name || "—"}
                     {!!p.taxRate && (
                       <div style={{ color: "#5C7095", fontSize: 11, marginTop: 2 }}>
@@ -393,7 +400,7 @@ export default function Products() {
                       </div>
                     )}
                   </td>
-                  <td>
+                  <td data-label="Variants">
                     <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                       {p.variants?.map((v, vi) => (
                         <span key={v._id ?? vi} title={v.color || undefined} style={{
@@ -415,7 +422,7 @@ export default function Products() {
                       ))}
                     </div>
                   </td>
-                  <td>
+                  <td className="row-actions">
                     <div style={{ display: "flex", gap: 8 }}>
                       <button className="btn-ghost" onClick={() => handleEdit(p)}>Edit</button>
                       <button className="btn-ghost" onClick={() => remove(p._id)}>Delete</button>
@@ -500,7 +507,7 @@ export default function Products() {
               ))}
             </div>
 
-            <div style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end" }}>
+            <div className="modal-actions" style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end" }}>
               <button className="btn-ghost" onClick={() => { setShowModal(false); resetForm(); }}>Cancel</button>
               <button className="btn-primary" onClick={saveProduct} disabled={saving}>
                 {saving ? "Saving…" : editId ? "Save Changes" : "Add Product"}
